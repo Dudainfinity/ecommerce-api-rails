@@ -26,17 +26,17 @@
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
-- 🔐 **Autenticação JWT** — registro, login e endpoint de perfil (`/me`), com senhas via `bcrypt` (`has_secure_password`).
-- 👥 **Autorização por papéis** — usuários `customer` e `admin` (operações de escrita no catálogo restritas a admins).
-- 🛍️ **Catálogo** — CRUD de **categorias** e **produtos**, com busca, filtros e paginação.
-- 🧾 **Pedidos** — checkout com múltiplos itens, *snapshot* de preço, baixa de estoque transacional e cancelamento com devolução ao estoque.
-- 📦 **Serialização JSON:API** — respostas padronizadas com `jsonapi-serializer`.
-- 🌐 **CORS** configurável por variável de ambiente.
-- ✅ **Testes** — 34 exemplos com RSpec (models + requests) e fábricas com FactoryBot/Faker.
+- **Autenticação JWT** — registro, login e endpoint de perfil (`/me`), com senhas via `bcrypt` (`has_secure_password`).
+- **Autorização por papéis** — usuários `customer` e `admin` (operações de escrita no catálogo restritas a admins).
+- **Catálogo** — CRUD de **categorias** e **produtos**, com busca, filtros e paginação.
+- **Pedidos** — checkout com múltiplos itens, *snapshot* de preço, baixa de estoque transacional e cancelamento com devolução ao estoque.
+- **Serialização JSON:API** — respostas padronizadas com `jsonapi-serializer`.
+- **CORS** configurável por variável de ambiente.
+- **Testes** — 34 exemplos com RSpec (models + requests) e fábricas com FactoryBot/Faker.
 
-## 🧱 Stack
+## Stack
 
 | Camada | Tecnologia |
 |---|---|
@@ -48,7 +48,7 @@
 | Paginação | kaminari |
 | Testes | RSpec, FactoryBot, Faker |
 
-## 🗂️ Modelo de dados
+## Modelo de dados
 
 ```
 User (customer | admin)
@@ -60,7 +60,7 @@ Order    ── belongs_to User,  has_many OrderItems
 OrderItem ─ belongs_to Order, belongs_to Product
 ```
 
-## 🚀 Começando
+## Começando
 
 ### Pré-requisitos
 - Ruby 3.2+
@@ -99,7 +99,7 @@ bin/rails server
 | admin | `admin@example.com` | `password123` |
 | customer | `cliente@example.com` | `password123` |
 
-## 📚 Endpoints
+## Endpoints
 
 Base: `/api/v1`
 
@@ -108,43 +108,43 @@ Base: `/api/v1`
 |---|---|---|---|
 | `POST` | `/auth/register` | — | Cria usuário e retorna token |
 | `POST` | `/auth/login` | — | Autentica e retorna token |
-| `GET`  | `/auth/me` | 🔑 | Dados do usuário autenticado |
+| `GET`  | `/auth/me` | | Dados do usuário autenticado |
 
 ### Categorias
 | Método | Rota | Auth |
 |---|---|---|
 | `GET` | `/categories` | — |
 | `GET` | `/categories/:id` | — |
-| `POST` | `/categories` | 🔑 admin |
-| `PATCH/PUT` | `/categories/:id` | 🔑 admin |
-| `DELETE` | `/categories/:id` | 🔑 admin |
+| `POST` | `/categories` | admin |
+| `PATCH/PUT` | `/categories/:id` | admin |
+| `DELETE` | `/categories/:id` | admin |
 
 ### Produtos
 | Método | Rota | Auth | Filtros |
 |---|---|---|---|
 | `GET` | `/products` | — | `?q=`, `?category_id=`, `?active=true`, `?page=`, `?per_page=` |
 | `GET` | `/products/:id` | — | |
-| `POST` | `/products` | 🔑 admin | |
-| `PATCH/PUT` | `/products/:id` | 🔑 admin | |
-| `DELETE` | `/products/:id` | 🔑 admin | |
+| `POST` | `/products` | admin | |
+| `PATCH/PUT` | `/products/:id` | admin | |
+| `DELETE` | `/products/:id` | admin | |
 
 ### Pedidos
 | Método | Rota | Auth | Descrição |
 |---|---|---|---|
-| `GET` | `/orders` | 🔑 | Lista pedidos do usuário (admin vê todos) |
-| `GET` | `/orders/:id` | 🔑 | Detalha um pedido |
-| `POST` | `/orders` | 🔑 | Cria pedido a partir de itens |
-| `POST` | `/orders/:id/cancel` | 🔑 | Cancela e devolve o estoque |
+| `GET` | `/orders` | | Lista pedidos do usuário (admin vê todos) |
+| `GET` | `/orders/:id` | | Detalha um pedido |
+| `POST` | `/orders` | | Cria pedido a partir de itens |
+| `POST` | `/orders/:id/cancel` | | Cancela e devolve o estoque |
 
-## 📖 Documentação interativa (Swagger / OpenAPI)
+## Documentação interativa (Swagger / OpenAPI)
 
 A API é documentada com **OpenAPI 3.0**, gerado a partir de testes de integração
 ([rswag](https://github.com/rswag/rswag)) — ou seja, **a documentação é validada pelos testes** e
 não fica desatualizada (há inclusive um job de CI que falha se o `swagger/v1/swagger.yaml`
 estiver fora de sincronia).
 
-- 🌐 **Swagger UI:** suba o servidor e acesse **http://localhost:3000/api-docs**
-- 📄 **Spec OpenAPI:** [`swagger/v1/swagger.yaml`](swagger/v1/swagger.yaml)
+- **Swagger UI:** suba o servidor e acesse **http://localhost:3000/api-docs**
+- **Spec OpenAPI:** [`swagger/v1/swagger.yaml`](swagger/v1/swagger.yaml)
 
 Na UI dá para autenticar clicando em **Authorize** e colando o token JWT (sem o prefixo `Bearer`)
 retornado por `/auth/login`, e então testar todos os endpoints direto do navegador.
@@ -155,7 +155,7 @@ Para regenerar a spec após alterar os endpoints:
 bundle exec rake rswag:specs:swaggerize
 ```
 
-## 🔌 Exemplos (cURL)
+## Exemplos (cURL)
 
 **Registrar e obter token**
 ```bash
@@ -184,7 +184,7 @@ curl -X POST http://localhost:3000/api/v1/orders \
   -d '{"items":[{"product_id":1,"quantity":2},{"product_id":4,"quantity":1}]}'
 ```
 
-## 🧪 Testes
+## Testes
 
 ```bash
 bundle exec rspec
@@ -197,14 +197,14 @@ bundle exec rspec
 Inclui specs de modelo, specs de request e specs de documentação (rswag), além de
 RuboCop e Brakeman rodando no CI.
 
-## 📁 Estrutura
+## Estrutura
 
 ```
 app/
-├─ controllers/api/v1/   # authentication, categories, products, orders
+├─ controllers/api/v1/   # autenticação, categorias, produtos, pedidos
 ├─ models/               # User, Category, Product, Order, OrderItem
-├─ serializers/          # JSON:API serializers
-└─ services/             # JsonWebToken (encode/decode)
+├─ serializers/          # serializers JSON:API
+└─ services/             # JsonWebToken (codifica/decodifica)
 config/
 ├─ routes.rb             # namespace api/v1 + montagem do Swagger UI
 └─ initializers/         # cors, rswag_api, rswag_ui
@@ -215,6 +215,6 @@ spec/
 swagger/v1/swagger.yaml  # spec OpenAPI 3.0 gerada
 ```
 
-## 📝 Licença
+## Licença
 
 Distribuído sob a licença MIT. Veja [`LICENSE`](LICENSE).

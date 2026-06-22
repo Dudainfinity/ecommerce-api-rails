@@ -14,7 +14,7 @@ class OrderItem < ApplicationRecord
 
   private
 
-  # Snapshot the product's price at purchase time.
+  # Congela o preço do produto no momento da compra.
   def set_unit_price
     self.unit_price = product.price if product
   end

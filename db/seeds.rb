@@ -1,5 +1,5 @@
-# Seed data for the e-commerce API.
-# Run with: bin/rails db:seed   (or db:setup to create + migrate + seed)
+# Dados de exemplo (seed) para a API de e-commerce.
+# Rode com: bin/rails db:seed   (ou db:setup para criar + migrar + popular)
 
 puts "Cleaning database..."
 OrderItem.delete_all

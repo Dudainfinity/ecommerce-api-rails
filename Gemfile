@@ -7,20 +7,20 @@ gem "pg", "~> 1.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
-# Authentication
+# Autenticação
 gem "bcrypt", "~> 3.1.7"          # has_secure_password
 gem "jwt", "~> 2.8"               # JSON Web Tokens
 
-# JSON serialization (JSON:API spec)
+# Serialização JSON (formato JSON:API)
 gem "jsonapi-serializer", "~> 2.2"
 
-# Pagination
+# Paginação
 gem "kaminari", "~> 1.2"
 
-# Cross-Origin Resource Sharing
+# Compartilhamento de recursos entre origens (CORS)
 gem "rack-cors"
 
-# OpenAPI / Swagger documentation
+# Documentação OpenAPI / Swagger
 gem "rswag-api", "~> 2.16"
 gem "rswag-ui", "~> 2.16"
 
@@ -43,11 +43,11 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  # Testing framework
+  # Framework de testes
   gem "rspec-rails", "~> 7.1"
   gem "factory_bot_rails", "~> 6.4"
   gem "faker", "~> 3.4"
 
-  # Generates the OpenAPI spec from request specs
+  # Gera a spec OpenAPI a partir dos testes de request
   gem "rswag-specs", "~> 2.16"
 end

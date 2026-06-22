@@ -6,7 +6,7 @@ class ApplicationController < ActionController::API
 
   private
 
-  # Reads the Bearer token, decodes it and loads the current user.
+  # Lê o token Bearer, decodifica e carrega o usuário atual.
   def authenticate_request!
     header = request.headers["Authorization"]
     token = header.to_s.split(" ").last

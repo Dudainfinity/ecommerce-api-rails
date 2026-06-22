@@ -1,4 +1,4 @@
-# Encodes and decodes JWTs used for stateless authentication.
+# Codifica e decodifica os JWTs usados na autenticação stateless.
 class JsonWebToken
   SECRET_KEY = Rails.application.secret_key_base.to_s
   DEFAULT_EXP = 24.hours

@@ -11,8 +11,8 @@ class Order < ApplicationRecord
   validates :total, numericality: { greater_than_or_equal_to: 0 }
   validate :must_have_items, on: :create
 
-  # Runs after the nested order_items have been validated (and their unit_price set),
-  # so the total reflects each item's snapshotted price.
+  # Roda depois que os order_items aninhados são validados (e o unit_price é definido),
+  # então o total reflete o preço congelado de cada item.
   after_validation :calculate_total
 
   def calculate_total

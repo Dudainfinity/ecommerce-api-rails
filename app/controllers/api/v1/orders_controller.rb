@@ -4,7 +4,7 @@ module Api
       before_action :authenticate_request!
       before_action :set_order, only: %i[show cancel]
 
-      # GET /api/v1/orders  (current user's orders; admins see all)
+      # GET /api/v1/orders  (pedidos do usuário atual; admin vê todos)
       def index
         scope = current_user.admin? ? Order.all : current_user.orders
         orders = scope.includes(:order_items, :user)
@@ -20,7 +20,7 @@ module Api
       end
 
       # POST /api/v1/orders
-      # body: { "items": [{ "product_id": 1, "quantity": 2 }, ...] }
+      # corpo: { "items": [{ "product_id": 1, "quantity": 2 }, ...] }
       def create
         order = current_user.orders.new(status: :pending)
 

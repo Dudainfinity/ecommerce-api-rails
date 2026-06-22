@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.configure do |config|
-  # Folder where the generated OpenAPI files live (served by rswag-api).
+  # Pasta onde ficam os arquivos OpenAPI gerados (servidos pelo rswag-api).
   config.openapi_root = Rails.root.join('swagger').to_s
 
   config.openapi_specs = {

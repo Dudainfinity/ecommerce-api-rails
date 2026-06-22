@@ -136,6 +136,25 @@ Base: `/api/v1`
 | `POST` | `/orders` | 🔑 | Cria pedido a partir de itens |
 | `POST` | `/orders/:id/cancel` | 🔑 | Cancela e devolve o estoque |
 
+## 📖 Documentação interativa (Swagger / OpenAPI)
+
+A API é documentada com **OpenAPI 3.0**, gerado a partir de testes de integração
+([rswag](https://github.com/rswag/rswag)) — ou seja, **a documentação é validada pelos testes** e
+não fica desatualizada (há inclusive um job de CI que falha se o `swagger/v1/swagger.yaml`
+estiver fora de sincronia).
+
+- 🌐 **Swagger UI:** suba o servidor e acesse **http://localhost:3000/api-docs**
+- 📄 **Spec OpenAPI:** [`swagger/v1/swagger.yaml`](swagger/v1/swagger.yaml)
+
+Na UI dá para autenticar clicando em **Authorize** e colando o token JWT (sem o prefixo `Bearer`)
+retornado por `/auth/login`, e então testar todos os endpoints direto do navegador.
+
+Para regenerar a spec após alterar os endpoints:
+
+```bash
+bundle exec rake rswag:specs:swaggerize
+```
+
 ## 🔌 Exemplos (cURL)
 
 **Registrar e obter token**
@@ -172,8 +191,11 @@ bundle exec rspec
 ```
 
 ```
-34 examples, 0 failures
+54 examples, 0 failures
 ```
+
+Inclui specs de modelo, specs de request e specs de documentação (rswag), além de
+RuboCop e Brakeman rodando no CI.
 
 ## 📁 Estrutura
 
@@ -184,9 +206,13 @@ app/
 ├─ serializers/          # JSON:API serializers
 └─ services/             # JsonWebToken (encode/decode)
 config/
-├─ routes.rb             # namespace api/v1
-└─ initializers/cors.rb
-spec/                    # models + requests
+├─ routes.rb             # namespace api/v1 + montagem do Swagger UI
+└─ initializers/         # cors, rswag_api, rswag_ui
+spec/
+├─ models/               # testes de modelo
+├─ requests/api/v1/      # testes de request + docs/ (specs OpenAPI)
+└─ swagger_helper.rb     # metadados da spec OpenAPI
+swagger/v1/swagger.yaml  # spec OpenAPI 3.0 gerada
 ```
 
 ## 📝 Licença

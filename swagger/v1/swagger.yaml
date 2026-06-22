@@ -1,0 +1,406 @@
+---
+openapi: 3.0.1
+info:
+  title: E-commerce API
+  version: v1
+  description: API RESTful pura de e-commerce em Ruby on Rails, com autenticação JWT,
+    serialização JSON:API e PostgreSQL.
+  contact:
+    name: Dudainfinity
+    url: https://github.com/Dudainfinity/ecommerce-api-rails
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+- url: http://localhost:3000
+  description: Desenvolvimento
+- url: "{scheme}://{host}"
+  description: Customizado
+  variables:
+    scheme:
+      default: https
+      enum:
+      - http
+      - https
+    host:
+      default: localhost:3000
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Informe o token retornado por /auth/login ou /auth/register.
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: 'Unauthorized: missing or invalid token'
+    ValidationErrors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - Email has already been taken
+          - Password is too short (minimum is 6 characters)
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiJ9...
+        user:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Maria Cliente
+            email:
+              type: string
+              example: cliente@example.com
+            role:
+              type: string
+              enum:
+              - customer
+              - admin
+              example: customer
+            created_at:
+              type: string
+              format: date-time
+paths:
+  "/api/v1/auth/register":
+    post:
+      summary: Registra um novo usuário
+      tags:
+      - Autenticação
+      parameters: []
+      responses:
+        '201':
+          description: usuário criado, retorna o token JWT
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AuthResponse"
+        '422':
+          description: dados inválidos
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ValidationErrors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Maria Cliente
+                email:
+                  type: string
+                  example: maria@example.com
+                password:
+                  type: string
+                  example: password123
+                  minLength: 6
+              required:
+              - name
+              - email
+              - password
+  "/api/v1/auth/login":
+    post:
+      summary: Autentica um usuário
+      tags:
+      - Autenticação
+      parameters: []
+      responses:
+        '200':
+          description: autenticado, retorna o token JWT
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AuthResponse"
+        '401':
+          description: credenciais inválidas
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: cliente@example.com
+                password:
+                  type: string
+                  example: password123
+              required:
+              - email
+              - password
+  "/api/v1/auth/me":
+    get:
+      summary: Retorna o usuário autenticado
+      tags:
+      - Autenticação
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: dados do usuário
+        '401':
+          description: token ausente ou inválido
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/categories":
+    get:
+      summary: Lista categorias (público)
+      tags:
+      - Categorias
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: lista de categorias
+    post:
+      summary: Cria uma categoria (admin)
+      tags:
+      - Categorias
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: categoria criada
+        '403':
+          description: usuário sem permissão de admin
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Eletrônicos
+                description:
+                  type: string
+                  example: Gadgets e dispositivos
+              required:
+              - name
+  "/api/v1/orders":
+    get:
+      summary: Lista os pedidos do usuário autenticado
+      tags:
+      - Pedidos
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: lista de pedidos
+        '401':
+          description: não autenticado
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    post:
+      summary: Cria um pedido a partir de itens
+      tags:
+      - Pedidos
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: pedido criado (baixa o estoque)
+        '422':
+          description: quantidade acima do estoque
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ValidationErrors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_id:
+                        type: integer
+                        example: 1
+                      quantity:
+                        type: integer
+                        example: 2
+                    required:
+                    - product_id
+                    - quantity
+              required:
+              - items
+  "/api/v1/orders/{id}/cancel":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    post:
+      summary: Cancela um pedido e devolve o estoque
+      tags:
+      - Pedidos
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: pedido cancelado
+  "/api/v1/products":
+    get:
+      summary: Lista produtos (público)
+      tags:
+      - Produtos
+      parameters:
+      - name: q
+        in: query
+        required: false
+        description: Busca por nome/descrição
+        schema:
+          type: string
+      - name: category_id
+        in: query
+        required: false
+        description: Filtra por categoria
+        schema:
+          type: integer
+      - name: active
+        in: query
+        required: false
+        description: Apenas ativos ("true")
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: lista de produtos
+    post:
+      summary: Cria um produto (admin)
+      tags:
+      - Produtos
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: produto criado
+        '403':
+          description: usuário sem permissão de admin
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: não autenticado
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Teclado Mecânico
+                description:
+                  type: string
+                  example: Switches blue
+                price:
+                  type: number
+                  format: float
+                  example: 299.9
+                sku:
+                  type: string
+                  example: KB-001
+                stock:
+                  type: integer
+                  example: 25
+                active:
+                  type: boolean
+                  example: true
+                category_id:
+                  type: integer
+                  example: 1
+              required:
+              - name
+              - price
+              - sku
+              - category_id
+  "/api/v1/products/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Detalha um produto (público)
+      tags:
+      - Produtos
+      responses:
+        '200':
+          description: produto encontrado
+        '404':
+          description: produto não encontrado
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"

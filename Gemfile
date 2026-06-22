@@ -20,6 +20,10 @@ gem "kaminari", "~> 1.2"
 # Cross-Origin Resource Sharing
 gem "rack-cors"
 
+# OpenAPI / Swagger documentation
+gem "rswag-api", "~> 2.16"
+gem "rswag-ui", "~> 2.16"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
@@ -43,4 +47,7 @@ group :development, :test do
   gem "rspec-rails", "~> 7.1"
   gem "factory_bot_rails", "~> 6.4"
   gem "faker", "~> 3.4"
+
+  # Generates the OpenAPI spec from request specs
+  gem "rswag-specs", "~> 2.16"
 end

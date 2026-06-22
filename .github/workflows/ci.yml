@@ -48,6 +48,12 @@ jobs:
       - name: Run tests
         run: bundle exec rspec
 
+      - name: Verify OpenAPI docs are up to date
+        run: |
+          bundle exec rake rswag:specs:swaggerize
+          git diff --exit-code swagger/ \
+            || (echo "::error::A spec OpenAPI está desatualizada. Rode 'rake rswag:specs:swaggerize' e faça commit de swagger/." && exit 1)
+
   lint:
     name: Lint (RuboCop)
     runs-on: ubuntu-latest

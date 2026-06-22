@@ -10,6 +10,12 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/Dudainfinity/ecommerce-api-rails/actions/workflows/ci.yml">
+    <img src="https://github.com/Dudainfinity/ecommerce-api-rails/actions/workflows/ci.yml/badge.svg" alt="CI">
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Ruby-3.2-CC342D?logo=ruby&logoColor=white" alt="Ruby">
   <img src="https://img.shields.io/badge/Rails-8.1-CC0000?logo=rubyonrails&logoColor=white" alt="Rails">
   <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL">

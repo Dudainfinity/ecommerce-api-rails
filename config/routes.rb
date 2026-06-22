@@ -24,7 +24,7 @@ Rails.application.routes.draw do
 
   # API root — basic service metadata
   root to: ->(_env) {
-    [200, { "Content-Type" => "application/json" },
-     [{ name: "ecommerce-api-rails", status: "ok", docs: "/README.md" }.to_json]]
+    [ 200, { "Content-Type" => "application/json" },
+     [ { name: "ecommerce-api-rails", status: "ok", docs: "/README.md" }.to_json ] ]
   }
 end

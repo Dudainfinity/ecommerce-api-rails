@@ -11,12 +11,12 @@ module Api
                       .order(created_at: :desc)
                       .page(params[:page]).per(params[:per_page] || 25)
 
-        render json: OrderSerializer.new(orders, include: [:order_items]).serializable_hash, status: :ok
+        render json: OrderSerializer.new(orders, include: [ :order_items ]).serializable_hash, status: :ok
       end
 
       # GET /api/v1/orders/:id
       def show
-        render json: OrderSerializer.new(@order, include: [:order_items]).serializable_hash, status: :ok
+        render json: OrderSerializer.new(@order, include: [ :order_items ]).serializable_hash, status: :ok
       end
 
       # POST /api/v1/orders
@@ -34,7 +34,7 @@ module Api
           order.order_items.each { |item| item.product.decrement_stock!(item.quantity) }
         end
 
-        render json: OrderSerializer.new(order, include: [:order_items]).serializable_hash, status: :created
+        render json: OrderSerializer.new(order, include: [ :order_items ]).serializable_hash, status: :created
       rescue ActiveRecord::RecordInvalid => e
         render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
       end
@@ -49,7 +49,7 @@ module Api
           @order.update!(status: :cancelled)
         end
 
-        render json: OrderSerializer.new(@order, include: [:order_items]).serializable_hash, status: :ok
+        render json: OrderSerializer.new(@order, include: [ :order_items ]).serializable_hash, status: :ok
       end
 
       private
